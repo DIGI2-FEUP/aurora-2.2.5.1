@@ -259,7 +259,7 @@ sudo apt-get install -y git jq curl lsb-release libyaml-dev libssl-dev libffi-de
 sudo chown $USER:$USER $aurora_home || true
 sudo rm -rf ${aurora_home}
 
-git clone --depth 1 -b ${aurora_tools_branch} https://github.com/shadow-robot/aurora.git $aurora_home
+git clone --depth 1 -b ${aurora_tools_branch} https://github.com/BrunoSantosCode/aurora-2.2.5.1.git $aurora_home
 
 echo ""
 echo " -------------------"
