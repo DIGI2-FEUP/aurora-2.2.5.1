@@ -1,0 +1,54 @@
+# Copyright 2022 Shadow Robot Company Ltd.
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
+---
+- name: Install chrony
+  apt:
+    name: chrony
+    state: present
+  become: yes
+
+- name: Set local chrony server address
+  lineinfile:
+    dest: /etc/chrony/chrony.conf
+    state: present
+    line: "server 127.127.1.0"
+  become: yes
+
+- name: Allow local network to use chrony
+  lineinfile:
+    dest: /etc/chrony/chrony.conf
+    state: present
+    line: "allow {{ chrony_allowed_network }}"
+  become: yes
+
+- name: Set chrony local stratum
+  lineinfile:
+    dest: /etc/chrony/chrony.conf
+    state: present
+    line: "local stratum 1"
+  become: yes
+
+- name: Restart chrony service
+  service:
+    name: chrony
+    state: restarted
+  become: yes
+  changed_when: false
+
+- name: Include installation/passwordless-command role
+  include_role:
+    name: installation/passwordless-command
+  vars:
+    passwordless_command: "/bin/systemctl restart chrony.service"

@@ -1,0 +1,51 @@
+# Copyright 2022-2023 Shadow Robot Company Ltd.
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
+---
+- name: Copy Close Everything desktop icon
+  copy:
+    src: "../../../common/resources/files/close_icon.png"
+    dest: "{{ shadow_hand_launcher_folder }}/close_icon.png"
+    mode: '664'
+
+- name: Set close_nuc_processes variable
+  set_fact:
+    close_nuc_processes: true
+  when: groups['control_machine'] is defined
+
+- name: Creating the local close everything script
+  template:
+    src: ../../../common/resources/templates/scripts/close-everything.j2
+    dest: "{{ shadow_hand_launcher_folder }}/close_everything.sh"
+    mode: '755'
+
+- name: Create Close Everything icon
+  template:
+    src: ../../../common/resources/templates/desktop-icons/standard-icon-no-terminator.j2
+    dest: "{{ desktop_path }}/Shadow Close Everything.desktop"
+    mode: '755'
+  vars:
+    desktop_shortcut_name: "Shadow Close Everything"
+    comment: "This is application closes all Shadow programs on this laptop and NUC (if used)"
+    folder: "{{ shadow_hand_launcher_folder }}"
+    shell_script_file_name: close_everything.sh
+    icon_file_name: close_icon.png
+    start_terminal: "false"
+
+- name: Make Create Close Everything desktop icon Trusted
+  shell: gio set "{{ desktop_path }}/Shadow Close Everything.desktop" "metadata::trusted" yes
+  when:
+    - ansible_distribution|string == 'Ubuntu'
+    - ansible_distribution_release|string == 'bionic'
+    - not skip_molecule_task|bool

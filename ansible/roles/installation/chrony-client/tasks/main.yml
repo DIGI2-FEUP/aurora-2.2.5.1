@@ -1,0 +1,47 @@
+# Copyright 2022 Shadow Robot Company Ltd.
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
+---
+- name: Install chrony
+  apt:
+    name: chrony
+    state: present
+  become: yes
+
+- name: Set chrony server IP address
+  lineinfile:
+    dest: /etc/chrony/chrony.conf
+    state: present
+    line: "server {{ chrony_server_ip }} minpoll 1 maxpoll 3 iburst prefer"
+  become: yes
+
+- name: Prevent chrony client from syncing time with internet
+  lineinfile:
+    dest: /etc/chrony/chrony.conf
+    state: absent
+    line: "pool 2.debian.pool.ntp.org offline iburst"
+  become: yes
+
+- name: Restart chrony service
+  service:
+    name: chrony
+    state: restarted
+  become: yes
+  changed_when: false
+
+- name: Include installation/passwordless-command role
+  include_role:
+    name: installation/passwordless-command
+  vars:
+    passwordless_command: "/bin/systemctl restart chrony.service"

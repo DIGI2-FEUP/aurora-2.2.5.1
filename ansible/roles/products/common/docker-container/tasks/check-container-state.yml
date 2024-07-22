@@ -1,0 +1,29 @@
+# Copyright 2022 Shadow Robot Company Ltd.
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
+---
+- name: Checking if container exists
+  become: yes
+  shell: "docker ps -aq -f name=^/{{ container_name }}$"
+  register: docker_id
+  changed_when: docker_id.rc != 0
+
+- name: Set container_exists to true
+  when: docker_id.stdout | length > 0
+  set_fact:
+    container_exists: true
+
+- name: Reinstalling docker container because it doesn't exist
+  import_tasks: reinstall.yml
+  when: not container_exists | bool

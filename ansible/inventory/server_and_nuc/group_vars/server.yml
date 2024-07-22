@@ -1,0 +1,45 @@
+# Copyright 2022-2023 Shadow Robot Company Ltd.
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
+---
+image: "public.ecr.aws/shadowrobot/dexterous-hand" # Docker image name
+tag: "noetic-v1.0.21" # Tag of the exact Docker hub image to pull
+product: '' # Name of the product (hand_e, arm_hand_e, hand_lite, arm_hand_lite, hand_extra_lite, arm_hand_extra_lite)
+reinstall: false # Flag to know if the docker container should be fully reinstalled
+container_name: "dexterous_hand" # Name of the docker container
+nvidia_docker: true # Define if nvidia-container-toolkit is used (defaul is false)
+shortcut_name: "Shadow_Hand_Launcher" # Specify the name for the desktop icon (default: Shadow_Hand_Launcher)
+use_aws: false # Flag to prompt for customer key for uploading files to AWS
+setup_directory: "/usr/local/bin" # Where setup scripts should be installed that are launched when Docker starts
+terminator: true # Launch terminator when the Docker starts
+sim_icon: true # creates an extra icon that runs hand in simulation mode
+save_nuc_logs: true # enables saving ROS logs from control-computer to server
+demo_icons: true # Generates desktop icons to run demos
+upgrade_check: false # If set to true will pull latest docker image and prompt to upgrade the container
+hand_side: "right" # Specify if the hand is right or left (ignored if bimanual=true)
+bimanual: false # Specify if both hands are used or not
+ansible_become_password: "{{ sudo_password }}" # Specify the sudo password for the server laptop
+arm_ip_left: "" # Specify the IP address of left arm
+arm_ip_right: "" # Specify the IP address of right arm
+ur_robot_type: "ur10e" # Specify ur robot type: ur10, ur10e, ur5, ur5e
+glove: "" # Determines which glove is installed (shadow_glove)
+real_glove: false # Whether a real physical glove is being used for hand control or not
+polhemus_type: "viper" # Allows the user to specify the polhemus type used (liberty or viper)
+pr_branches: "" # Space-separated list in double quotes of PRs and branches like this "https://github.com/shadow-robot/repo/pull/266 https://github.com/shadow-robot/repo/tree/custom_branch" to check out on server and catkin_make
+router: false # Specify if a router is used between server and NUC
+scene_file: "" # Allows the user to override the scene_file used in GUI launch (only for arm+hand product) e.g. scene_file="new_scene" (we do not add .scene to the variable as it assumes:$(find sr_description_common)/scenes/{scene_file}.scene and $(find sr_description_common)/worlds/{scene_file}.world)
+delivery: true # This variable is used to determine whether we are using this for product delivery, or for development purposes. (should be used internally by Shadow Engineers)
+local_image: false # This boolean dictates if you want to use a local image or not. Skips all authentication checks and stops the image from being pulled.
+
+skip_molecule_task: false # Used for automated tests - should not be used by users

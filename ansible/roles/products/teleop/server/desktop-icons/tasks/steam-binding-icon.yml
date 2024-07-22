@@ -1,0 +1,32 @@
+# Copyright 2022 Shadow Robot Company Ltd.
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
+- name: Copy desktop icon
+  copy:
+    src: ../../../common/resources/files/{{ steam_binding }}
+    dest: "{{ shadow_hand_launcher_folder }}/{{ steam_binding }}"
+    mode: '664'
+
+- name: Create Steam Vive Binding Icon
+  template:
+    src: ../../../common/resources/templates/desktop-icons/standard-icon-command.j2
+    dest: "{{ desktop_path }}/Steam Vive Binding.desktop"
+    mode: '755'
+  vars:
+    desktop_shortcut_name: "Steam Vive Binding"
+    comment: "This icon opens the browser for tracker binding"
+    folder: "{{ shadow_hand_launcher_folder }}"
+    exec_command: xdg-open {{ steam_vive_binding_url }}
+    icon_file_name: "{{ steam_binding }}"
+    start_terminal: "false"

@@ -1,0 +1,563 @@
+# Copyright 2022 Shadow Robot Company Ltd.
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
+---
+- name: Set Shadow Bimanual Warnining
+  set_fact:
+    bimanual_warning_title: "Unimanual Launch Warning"
+    bimanual_warning_text: "It is potentially unsafe to run a bimanual robot in unimanual mode; the pose of the unused arm is unknown, which may result in collisions.\nTo safely launch in unimanual mode, please first launch in bimanual mode, and use Rviz MotionPlanning to move the arm and hand you do not intend to use into the 'safe_store' state.\nBy clicking 'I accept the risks', you acknowledge that you understand the risks involved by running the unimanual system without moving the other robot arm and take full responsibility for any consequences that may arise."
+
+- name: Set enable warning vars
+  set_fact:
+    enable_warning_var: true
+    extra_vars_value: " 0"  # Used to enable the bimanual warning for control loop advanced launcher icon
+  when: bimanual|bool and not skip_warning|bool
+
+- name: Install desktop icon for launching Shadow Right Teleop
+  include_role:
+    name: products/common/default-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_right }}"
+    launch_script: "shadow_launch_right_teleop.sh"
+    desktop_icon_name: "Launch Shadow Right Teleop"
+    template: templates/scripts/launch-teleop.j2
+    desktop_icon_path: "Launch Shadow Right Teleop"
+    launch_terminal: "false"
+    hand_side_label: "Right Hand"
+    control_loop_script_name: "shadow_nuc_right_hardware_control_loop.sh"
+    gui_script_name: "shadow_GUI_right.sh"
+    haptx_mapping_script_name: "shadow_haptx_mapping_launch_right.sh"
+    enable_warning: "{{ enable_warning_var|bool }}"
+    warning_title: "{{ bimanual_warning_title }}"
+    warning_text: "{{ bimanual_warning_text }}"
+  when: bimanual|bool or hand_side=="right"
+
+- name: Install desktop icon for launching Shadow Left Teleop
+  include_role:
+    name: products/common/default-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_left }}"
+    launch_script: "shadow_launch_left_teleop.sh"
+    desktop_icon_name: "Launch Shadow Left Teleop"
+    template: templates/scripts/launch-teleop.j2
+    desktop_icon_path: "Launch Shadow Left Teleop"
+    launch_terminal: "false"
+    hand_side_label: "Left Hand"
+    control_loop_script_name: "shadow_nuc_left_hardware_control_loop.sh"
+    gui_script_name: "shadow_GUI_left.sh"
+    haptx_mapping_script_name: "shadow_haptx_mapping_launch_left.sh"
+    enable_warning: "{{ enable_warning_var|bool }}"
+    warning_title: "{{ bimanual_warning_title }}"
+    warning_text: "{{ bimanual_warning_text }}"
+  when: bimanual|bool or hand_side=="left"
+
+- name: Install desktop icon for launching Shadow Bimanual Teleop
+  include_role:
+    name: products/common/default-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_bimanual }}"
+    launch_script: "shadow_launch_bimanual_teleop.sh"
+    desktop_icon_name: "Launch Shadow Bimanual Teleop"
+    template: templates/scripts/launch-teleop.j2
+    desktop_icon_path: "Launch Shadow Bimanual Teleop"
+    launch_terminal: "false"
+    hand_side_label: "Bimanual"
+    control_loop_script_name: "shadow_nuc_bimanual_hardware_control_loop.sh"
+    gui_script_name: "shadow_GUI_bimanual.sh"
+    haptx_mapping_script_name: "shadow_haptx_mapping_launch_bimanual.sh"
+    enable_warning: "false"
+    warning_title: "{{ bimanual_warning_title }}"
+    warning_text: "{{ bimanual_warning_text }}"
+  when: bimanual|bool
+
+- name: Install desktop icon for launching Shadow Remote Right Teleop
+  include_role:
+    name: products/common/default-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_right }}"
+    launch_script: "shadow_launch_remote_right_teleop.sh"
+    desktop_icon_name: "Launch Remote Shadow Right Teleop"
+    template: templates/scripts/launch-teleop.j2
+    desktop_icon_path: "Launch Remote Shadow Right Teleop"
+    launch_terminal: "false"
+    hand_side_label: "Right Hand"
+    control_loop_script_name: "shadow_nuc_right_hardware_control_loop.sh"
+    gui_script_name: "shadow_GUI_right_remote.sh"
+    haptx_mapping_script_name: "shadow_haptx_mapping_launch_right.sh"
+  when:
+    - bimanual|bool or hand_side=="right"
+    - remote_icons|bool
+
+- name: Install desktop icon for launching Shadow Remote Left Teleop
+  include_role:
+    name: products/common/default-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_left }}"
+    launch_script: "shadow_launch_remote_left_teleop.sh"
+    desktop_icon_name: "Launch Remote Shadow Left Teleop"
+    template: templates/scripts/launch-teleop.j2
+    desktop_icon_path: "Launch Remote Shadow Left Teleop"
+    launch_terminal: "false"
+    hand_side_label: "Left Hand"
+    control_loop_script_name: "shadow_nuc_left_hardware_control_loop.sh"
+    gui_script_name: "shadow_GUI_left_remote.sh"
+    haptx_mapping_script_name: "shadow_haptx_mapping_launch_left.sh"
+  when:
+    - bimanual|bool or hand_side=="left"
+    - remote_icons|bool
+
+- name: Install desktop icon for launching Shadow Remote Bimanual Teleop
+  include_role:
+    name: products/common/default-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_bimanual }}"
+    launch_script: "shadow_launch_remote_bimanual_teleop.sh"
+    desktop_icon_name: "Launch Remote Shadow Bimanual Teleop"
+    template: templates/scripts/launch-teleop.j2
+    desktop_icon_path: "Launch Remote Shadow Bimanual Teleop"
+    launch_terminal: "false"
+    hand_side_label: "Bimanual"
+    control_loop_script_name: "shadow_nuc_bimanual_hardware_control_loop.sh"
+    gui_script_name: "shadow_GUI_bimanual_remote.sh"
+    haptx_mapping_script_name: "shadow_haptx_mapping_launch_bimanual.sh"
+  when:
+    - bimanual|bool
+    - remote_icons|bool
+
+- name: Include documentation role
+  include_role:
+    name: products/common/documentation
+  when: customer_key is defined and customer_key | length > 0
+
+- name: Install desktop icon for RQT on NUC
+  include_role:
+    name: products/common/default-icon-no-terminator
+  vars:
+    template: templates/scripts/start-docker-container-nuc-command.j2
+    desktop_icon_png: "ROS_logo.png"
+    launch_script: "nuc_rqt.sh"
+    desktop_icon_name: "Shadow NUC RQT"
+    desktop_icon_path: "Shadow NUC RQT"
+    command_to_run: "rqt"
+    launch_terminal: "false"
+
+- name: Create shared icons
+  include_tasks: shared-roles.yml
+
+- name: Create Local Launch folder
+  file:
+    path: "{{ desktop_path }}/Local Launch"
+    mode: '755'
+    state: directory
+
+- name: Install desktop icon for NUC right hand and arm hardware control loop
+  import_tasks: nuc-control-loop-icon.yml
+  vars:
+    desktop_icon_png: "hand-e.png"
+    launch_script: "shadow_nuc_right_hardware_control_loop.sh"
+    desktop_icon_name: "3 - Launch NUC Right Side Teleop Hardware Control Loop"
+    desktop_icon_path: "{{ right_advanced_launcher }}/3 - Launch NUC Right Side Teleop Hardware Control Loop"
+    hand_side_var: "right"
+    hand_side_ad: "-r"
+    warning_title: "{{ bimanual_warning_title }}"
+    warning_text: "{{ bimanual_warning_text }}"
+    extra_vars: "{{ extra_vars_value }}"
+  when: bimanual|bool or hand_side=="right"
+
+- name:  Install desktop icon for NUC left hand and arm hardware control loop
+  import_tasks: nuc-control-loop-icon.yml
+  vars:
+    desktop_icon_png: "hand-e-left.png"
+    launch_script: "shadow_nuc_left_hardware_control_loop.sh"
+    desktop_icon_name: "3 - Launch NUC Left Side Teleop Hardware Control Loop"
+    desktop_icon_path: "{{ left_advanced_launcher }}/3 - Launch NUC Left Side Teleop Hardware Control Loop"
+    hand_side_var: "left"
+    hand_side_ad: "-l"
+    warning_title: "{{ bimanual_warning_title }}"
+    warning_text: "{{ bimanual_warning_text }}"
+    extra_vars: "{{ extra_vars_value }}"
+  when: bimanual|bool or hand_side=="left"
+
+- name: Install desktop icon for NUC bimanual teleop hardware control loop
+  import_tasks: nuc-control-loop-icon-bimanual.yml
+  vars:
+    desktop_icon_png: "hand-e-bimanual.png"
+    launch_script: "shadow_nuc_bimanual_hardware_control_loop.sh"
+    desktop_icon_name: "3 - Launch NUC Bimanual Teleop Hardware Control Loop"
+    desktop_icon_path: "{{ bimanual_advanced_launcher }}/3 - Launch NUC Bimanual Teleop Hardware Control Loop"
+    warning_title: "{{ bimanual_warning_title }}"
+    warning_text: "{{ bimanual_warning_text }}"
+  when: bimanual|bool
+
+- name: Setting up icons for demohands A,B,C,D for unimanual teleop
+  include_tasks: demohands-unimanual.yml
+  when: demohand_icons|bool
+
+- name: Set GUI icon variables to standard values for haptx
+  set_fact:
+    launch_file_input_gui_right: "teleop_vive_haptx.launch vive:=false robot_model:={{ ur_robot_type }} require_pedal:=true tracker_id:={{ ra_tracker_id }} jog_arm:=false arm_servo:=true ee_link:=palm tracker_on_palm:=true hand_side_ad:=-r"
+    launch_file_input_gui_left: "teleop_vive_haptx.launch side:=left vive:=false robot_model:={{ ur_robot_type }} require_pedal:=true tracker_id:={{ la_tracker_id }} jog_arm:=false arm_servo:=true ee_link:=palm tracker_on_palm:=true hand_side_ad:=-l"
+    launch_file_input_gui_bimanual: "teleop_bimanual_vive_haptx.launch robot_model:={{ ur_robot_type }} require_pedal:=true ra_tracker_id:={{ ra_tracker_id }} la_tracker_id:={{ la_tracker_id }} jog_arm:=false arm_servo:=true ee_link:=palm tracker_on_palm:=true"  
+    project_name_input_value: "sr_teleop_vive_haptx"
+  when: glove=="haptx"
+
+- name: Set GUI icon variables to standard values for shadow_glove
+  set_fact:
+    launch_file_input_gui_right: "sr_teleop_vive_polhemus.launch polhemus_product_type:={{ polhemus_type }} vive:=true robot_model:={{ ur_robot_type }} require_pedal:=true user_calibration_file_name:=default_calibration_right.yaml jog_arm:=false arm_servo:=true ee_link:=palm tracker_on_palm:=true hand_side_ad:=-r"
+    launch_file_input_gui_left: "sr_teleop_vive_polhemus.launch polhemus_product_type:={{ polhemus_type }} side:=left vive:=true robot_model:={{ ur_robot_type }} require_pedal:=true user_calibration_file_name:=default_calibration_left.yaml jog_arm:=false arm_servo:=true ee_link:=palm tracker_on_palm:=true hand_side_ad:=-l"
+    launch_file_input_gui_bimanual: "sr_teleop_vive_polhemus_bimanual.launch polhemus_product_type:={{ polhemus_type }} vive:=true robot_model:={{ ur_robot_type }} require_pedal:=true right_user_calibration_file_name:=default_calibration_right.yaml left_user_calibration_file_name:=default_calibration_left.yaml jog_arm:=false arm_servo:=true ee_link:=palm tracker_on_palm:=true"
+    project_name_input_value: "sr_teleop_vive_polhemus"
+  when: glove=="shadow_glove"
+
+- name: Set GUI icon variables for custom scene
+  set_fact:
+    launch_file_input_gui_right: "{{ launch_file_input_gui_right }} scene_file:='$(find sr_description_common)/scenes/{{ scene_file_right }}.scene' world:='$(find sr_description_common)/worlds/{{ scene_file_right }}.world'"
+    launch_file_input_gui_left: "{{ launch_file_input_gui_left }} scene_file:='$(find sr_description_common)/scenes/{{ scene_file_left }}.scene' world:='$(find sr_description_common)/worlds/{{ scene_file_left }}.world'"
+    launch_file_input_gui_bimanual: "{{ launch_file_input_gui_bimanual }} scene_file:='$(find sr_description_common)/scenes/{{ scene_file_bimanual }}.scene' world:='$(find sr_description_common)/worlds/{{ scene_file_bimanual }}.world'"
+  when: scene_file|length > 0
+
+- name: Set GUI icon variables for sim
+  set_fact:
+    launch_file_input_gui_right_sim: "{{ launch_file_input_gui_right }} external_control_loop:=false sim:=true"
+    launch_file_input_gui_left_sim: "{{ launch_file_input_gui_left }} external_control_loop:=false sim:=true"
+    launch_file_input_gui_bimanual_sim: "{{ launch_file_input_gui_bimanual }} external_control_loop:=false sim:=true"
+
+- name: Set GUI icon variables for sim and custom scene
+  set_fact:
+    launch_file_input_gui_right_sim: "{{ launch_file_input_gui_right_sim }} world:='{{ scene_file | replace('.scene','.world') | replace('/scenes/','/worlds/') }}'"
+    launch_file_input_gui_left_sim: "{{ launch_file_input_gui_left_sim }} world:='{{ scene_file | replace('.scene','.world') | replace('/scenes/','/worlds/') }}'"
+    launch_file_input_gui_bimanual_sim: "{{ launch_file_input_gui_bimanual_sim }} world:='{{ scene_file | replace('.scene','.world') | replace('/scenes/','/worlds/') }}'"
+
+- name: Set GUI icon variables for real hardware
+  set_fact:
+    launch_file_input_gui_right_realhw: "{{ launch_file_input_gui_right }} external_control_loop:=true"
+    launch_file_input_gui_left_realhw: "{{ launch_file_input_gui_left }} external_control_loop:=true"
+    launch_file_input_gui_bimanual_realhw: "{{ launch_file_input_gui_bimanual }} external_control_loop:=true"
+
+- name: Install desktop icon for right side teleop GUI
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_right }}"
+    launch_script: "shadow_GUI_right.sh"
+    project_name_input: "{{ project_name_input_value }}"
+    launch_file_input: "{{ launch_file_input_gui_right_realhw }}"
+    desktop_icon_name: "4 - Launch Right Teleop GUI"
+    desktop_icon_path: "{{ right_advanced_launcher }}/4 - Launch Right Teleop GUI"
+  when: bimanual|bool or hand_side=="right"
+
+- name: Install desktop icon for left side teleop GUI
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_left }}"
+    launch_script: "shadow_GUI_left.sh"
+    project_name_input: "{{ project_name_input_value }}"
+    launch_file_input: "{{ launch_file_input_gui_left_realhw }}"
+    desktop_icon_name: "4 - Launch Left Teleop GUI"
+    desktop_icon_path: "{{ left_advanced_launcher }}/4 - Launch Left Teleop GUI"
+  when: bimanual|bool or hand_side=="left"
+
+- name: Install desktop icon for bimanual teleop GUI
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_bimanual }}"
+    launch_script: "shadow_GUI_bimanual.sh"
+    project_name_input: "{{ project_name_input_value }}"
+    launch_file_input: "{{ launch_file_input_gui_bimanual_realhw }}"
+    desktop_icon_name: "4 - Launch Bimanual Teleop GUI"
+    desktop_icon_path: "{{ bimanual_advanced_launcher }}/4 - Launch Bimanual Teleop GUI"
+  when: bimanual|bool
+
+- name: Install desktop icon for remote right side teleop GUI
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_right }}"
+    launch_script: "shadow_GUI_right_remote.sh"
+    project_name_input: "{{ project_name_input_value }}"
+    launch_file_input: "{{ launch_file_input_gui_right_realhw }} remote:=true"
+    desktop_icon_name: "4 - Launch Remote Right Teleop GUI"
+    desktop_icon_path: "{{ right_advanced_launcher }}/4 - Launch Remote Right Teleop GUI"
+  when:
+    - bimanual|bool or hand_side=="right"
+    - remote_icons|bool
+    - glove=="shadow_glove"
+
+- name: Install desktop icon for remote left side teleop GUI
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_left }}"
+    launch_script: "shadow_GUI_left_remote.sh"
+    project_name_input: "{{ project_name_input_value }}"
+    launch_file_input: "{{ launch_file_input_gui_left_realhw }} remote:=true"
+    desktop_icon_name: "4 - Launch Remote Left Teleop GUI"
+    desktop_icon_path: "{{ left_advanced_launcher }}/4 - Launch Remote Left Teleop GUI"
+  when:
+    - bimanual|bool or hand_side=="left"
+    - remote_icons|bool
+    - glove=="shadow_glove"
+
+- name: Install desktop icon for remote bimanual teleop GUI
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_bimanual }}"
+    launch_script: "shadow_GUI_bimanual_remote.sh"
+    project_name_input: "{{ project_name_input_value }}"
+    launch_file_input: "{{ launch_file_input_gui_bimanual_realhw }} remote:=true"
+    desktop_icon_name: "4 - Launch Remote Bimanual Teleop GUI"
+    desktop_icon_path: "{{ bimanual_advanced_launcher }}/4 - Launch Remote Bimanual Teleop GUI"
+  when:
+    - bimanual|bool
+    - remote_icons|bool
+    - glove=="shadow_glove"
+    
+- name: Install desktop icon for remote right side teleop GUI
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_right }}"
+    launch_script: "shadow_GUI_right_remote.sh"
+    project_name_input: "{{ project_name_input_value }}"
+    launch_file_input: "{{ launch_file_input_gui_right_realhw }} pedal:=false"
+    desktop_icon_name: "4 - Launch Remote Right Teleop GUI"
+    desktop_icon_path: "{{ right_advanced_launcher }}/4 - Launch Remote Right Teleop GUI"
+  when:
+    - bimanual|bool or hand_side=="right"
+    - remote_icons|bool
+    - glove=="haptx"
+
+- name: Install desktop icon for remote left side teleop GUI
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_left }}"
+    launch_script: "shadow_GUI_left_remote.sh"
+    project_name_input: "{{ project_name_input_value }}"
+    launch_file_input: "{{ launch_file_input_gui_left_realhw }} pedal:=false"
+    desktop_icon_name: "4 - Launch Remote Left Teleop GUI"
+    desktop_icon_path: "{{ left_advanced_launcher }}/4 - Launch Remote Left Teleop GUI"
+  when:
+    - bimanual|bool or hand_side=="left"
+    - remote_icons|bool
+    - glove=="haptx"
+
+- name: Install desktop icon for remote bimanual teleop GUI
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_bimanual }}"
+    launch_script: "shadow_GUI_bimanual_remote.sh"
+    project_name_input: "{{ project_name_input_value }}"
+    launch_file_input: "{{ launch_file_input_gui_bimanual_realhw }} pedal:=false"
+    desktop_icon_name: "4 - Launch Remote Bimanual Teleop GUI"
+    desktop_icon_path: "{{ bimanual_advanced_launcher }}/4 - Launch Remote Bimanual Teleop GUI"
+  when:
+    - bimanual|bool
+    - remote_icons|bool
+    - glove=="haptx"
+
+- name: Set launch file input for HaptX mapping (overriding right mapping only)
+  set_fact:
+    launch_file_input_haptx_mapping_right: "haptx_base.launch biotac_mapping_script_type:={{ rh_biotac_mapping }}"
+    launch_file_input_haptx_mapping_bimanual: "haptx_base_bimanual.launch rh_biotac_mapping_script_type:={{ rh_biotac_mapping }}"
+  when: lh_biotac_mapping|length == 0 and rh_biotac_mapping|length > 0 
+
+- name: Set launch file input for HaptX mapping (overriding left mapping only)
+  set_fact:
+    launch_file_input_haptx_mapping_left: "haptx_base.launch hand_side_prefix:=lh biotac_mapping_script_type:={{ lh_biotac_mapping }}"
+    launch_file_input_haptx_mapping_bimanual: "haptx_base_bimanual.launch lh_biotac_mapping_script_type:={{ lh_biotac_mapping }}"
+  when: lh_biotac_mapping|length > 0 and rh_biotac_mapping|length == 0
+
+- name: Set launch file input for HaptX mapping (overriding both left and right mappings)
+  set_fact:
+    launch_file_input_haptx_mapping_right: "haptx_base.launch biotac_mapping_script_type:={{ rh_biotac_mapping }}"
+    launch_file_input_haptx_mapping_left: "haptx_base.launch hand_side_prefix:=lh biotac_mapping_script_type:={{ lh_biotac_mapping }}"
+    launch_file_input_haptx_mapping_bimanual: "haptx_base_bimanual.launch rh_biotac_mapping_script_type:={{ rh_biotac_mapping }} lh_biotac_mapping_script_type:={{ lh_biotac_mapping }}"
+  when: lh_biotac_mapping|length > 0 and rh_biotac_mapping|length > 0
+
+- name: Install desktop icon for running haptx mapping node right
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_right }}"
+    launch_script: "shadow_haptx_mapping_launch_right.sh"
+    desktop_icon_name: "5 - Launch Right HaptX Mapping"
+    desktop_icon_path: "{{ right_advanced_launcher }}/5 - Launch Right HaptX Mapping"
+    project_name_input: "sr_teleop_vive_haptx"
+    launch_file_input: "{{ launch_file_input_haptx_mapping_right }}"
+  when:
+    - bimanual|bool or hand_side=="right"
+    - glove=="haptx"
+
+- name: Install desktop icon for running haptx mapping node left
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_left }}"
+    launch_script: "shadow_haptx_mapping_launch_left.sh"
+    desktop_icon_name: "5 - Launch Left HaptX Mapping"
+    desktop_icon_path: "{{ left_advanced_launcher }}/5 - Launch Left HaptX Mapping"
+    project_name_input: "sr_teleop_vive_haptx"
+    launch_file_input: "{{ launch_file_input_haptx_mapping_left }}"
+  when:
+    - bimanual|bool or hand_side=="left"
+    - glove=="haptx"
+
+- name: Install desktop icon for running haptx mapping node bimanual
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_bimanual }}"
+    launch_script: "shadow_haptx_mapping_launch_bimanual.sh"
+    desktop_icon_name: "5 - Launch Bimanual HaptX Mapping"
+    desktop_icon_path: "{{ bimanual_advanced_launcher }}/5 - Launch Bimanual HaptX Mapping"
+    project_name_input: "sr_teleop_vive_haptx"
+    launch_file_input: "{{ launch_file_input_haptx_mapping_bimanual }}"
+  when: bimanual|bool and glove=="haptx"
+
+- name: Install desktop icon for Teleop server Simulation (Unimanual Right)
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_right }}"
+    launch_script: "shadow_sim_demo_right.sh"
+    desktop_icon_name: "Right Teleop Simulation"
+    desktop_icon_path: "Shadow Advanced Launchers/Right Teleop Simulation"
+    project_name_input: "{{ project_name_input_value }}"
+    launch_file_input: "{{ launch_file_input_gui_right_sim }}"
+  when:
+    - sim_icon|bool
+    - bimanual|bool or hand_side=="right"
+
+- name: Install desktop icon for Teleop server Simulation (Unimanual Left)
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_left }}"
+    launch_script: "shadow_sim_demo_left.sh"
+    desktop_icon_name: "Left Teleop Simulation"
+    desktop_icon_path: "Shadow Advanced Launchers/Left Teleop Simulation"
+    project_name_input: "{{ project_name_input_value }}"
+    launch_file_input: "{{ launch_file_input_gui_left_sim }}"
+  when:
+    - sim_icon|bool
+    - bimanual|bool or hand_side=="left"
+
+- name: Install desktop icon for Teleop server Simulation (Bimanual)
+  include_role:
+    name: products/common/roslaunch-icon
+  vars:
+    desktop_icon_png: "{{ teleop_glove_bimanual }}"
+    launch_script: "shadow_sim_demo_bimanual.sh"
+    desktop_icon_name: "Bimanual Teleop Simulation"
+    desktop_icon_path: "Shadow Advanced Launchers/Bimanual Teleop Simulation"
+    project_name_input: "{{ project_name_input_value }}"
+    launch_file_input: "{{ launch_file_input_gui_bimanual_sim }}"
+  when:
+    - sim_icon|bool
+    - bimanual|bool
+
+- name: Install desktop icon for NUC container
+  include_role:
+    name: products/common/default-icon
+  vars:
+    template: templates/scripts/start-docker-container-nuc-interactive-terminal.j2
+    desktop_icon_png: "nuc.png"
+    launch_script: "shadow_nuc_container.sh"
+    desktop_icon_name: "Launch NUC Container"
+    desktop_icon_path: "Shadow Advanced Launchers/Launch NUC Container"
+    launch_terminal: "false"
+
+- name: Include products/common/demo-icons role
+  include_role:
+    name: products/common/demo-icons
+  vars:
+    demo_icon_folder: "{{ desktop_path }}/Shadow Demos"
+  when: demo_icons|bool
+
+- name: Include products/common/local-hand-launch role
+  include_role:
+    name: products/common/local-hand-launch
+  vars:
+    override_launch_hand_var: True
+    simulate_icons: False
+
+- name: Install desktop icon for Zero Force Mode - Right Hand for NUC
+  include_tasks: hand-icon.yml
+  vars:
+    teleop_control_launch: "sr_robot_launch sr_hardware_control_loop.launch"
+    launch_file_params: "robot_model:={{ ur_robot_type }} pwm_control:=false"
+    desktop_icon_png: "hand-e.png"
+    launch_script: "shadow_zero_force_mode_right.sh"
+    desktop_icon_name: "3 - Zero Force Mode - Right Hand"
+    desktop_icon_path: "{{ right_advanced_launcher }}/3 - Zero Force Mode - Right Hand"
+    roslaunch_command: "sr_hand_autodetect -r roslaunch"
+  when: bimanual|bool or hand_side=="right"
+
+- name: Install desktop icon for Zero Force Mode - Left Hand for NUC
+  include_tasks: hand-icon.yml
+  vars:
+    teleop_control_launch: "sr_robot_launch sr_hardware_control_loop.launch"
+    launch_file_params: "robot_model:={{ ur_robot_type }} pwm_control:=false"
+    desktop_icon_png: "hand-e-left.png"
+    launch_script: "shadow_zero_force_mode_left.sh"
+    desktop_icon_name: "3 - Zero Force Mode - Left Hand"
+    desktop_icon_path: "{{ left_advanced_launcher }}/3 - Zero Force Mode - Left Hand"
+    roslaunch_command: "sr_hand_autodetect -l roslaunch"
+  when: bimanual|bool or hand_side=="left"
+
+- name: Include products/common/local-zero-force-mode-launch role
+  include_role:
+    name: products/common/local-zero-force-mode-launch
+
+- name: Create executable launch script for RQT Shadow Glove Calibration plugin
+  template:
+    src: ../../../common/resources/templates/scripts/command-script.j2
+    dest: "{{ shadow_hand_launcher_folder }}/shadow_glove_calibration_rqt.sh"
+    mode: '755'
+  vars:
+    command: "rqt -s sr_glove_calibration_gui.sr_glove_calibration_gui.SrGloveCalibrationGui"
+  when: glove=="shadow_glove"
+
+- name: Set Shadow Glove driver name (if right)
+  set_fact:
+    glove_driver_type: "right"
+  when: hand_side=="right"
+
+- name: Set Shadow Glove driver name (if left)
+  set_fact:
+    glove_driver_type: "left"
+  when: hand_side=="left"
+
+- name: Set Shadow Glove driver name (if bimanual)
+  set_fact:
+    glove_driver_type: "bimanual"
+  when: bimanual|bool
+
+- name: Install desktop icon for Shadow Glove Calibration
+  include_role:
+    name: products/common/default-icon
+  vars:
+    desktop_icon_png: "shadow_glove_{{ glove_driver_type }}.png"
+    launch_script: "shadow_glove_calibration.sh"
+    desktop_icon_name: "Launch Shadow {{ glove_driver_type | title }} Glove Calibration"
+    template: templates/scripts/launch-shadow-glove-calibration.j2
+    desktop_icon_path: "Shadow Advanced Launchers/Launch Shadow {{ glove_driver_type | title }} Glove Calibration"
+    launch_terminal: "false"
+    glove_driver_value: "{{ glove_driver_type }}"
+  when: glove=="shadow_glove"

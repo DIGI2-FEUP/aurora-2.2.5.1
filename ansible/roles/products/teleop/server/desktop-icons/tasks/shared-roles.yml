@@ -1,0 +1,80 @@
+# Copyright 2022 Shadow Robot Company Ltd.
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
+---
+- name: Install the Shadow System Monitor desktop icon for Teleop
+  include_role:
+    name: products/common/web-gui-icon
+  vars:
+    desktop_icon_png: "system_monitor.png"
+    launch_script: "shadow_launcher_system_monitor_exec.sh"
+    local_website_port_var: '8081'
+    desktop_icon_name: "Shadow System Monitor"
+    desktop_icon_path: "Shadow System Monitor"
+    launch_terminal: "false"
+    start_container_var: "false"
+    start_server_command_var: ""
+    preconditions_var: "Launch Shadow Teleop icon"
+    live_website_url_var: ""
+
+- name: Create Shadow Demos folder
+  file:
+    path: "{{ desktop_path }}/Shadow Demos"
+    mode: '755'
+    state: directory
+
+- name: Create Shadow Advanced Launchers folder
+  file:
+    path: "{{ desktop_path }}/Shadow Advanced Launchers"
+    mode: '755'
+    state: directory
+
+- name: Set Advanced Launcher Name
+  set_fact:
+    left_advanced_launcher: "Shadow Advanced Launchers"
+    right_advanced_launcher: "Shadow Advanced Launchers"
+    bimanual_advanced_launcher: "Shadow Advanced Launchers"
+  when: not bimanual|bool
+
+- name: Set Advanced Launcher Name
+  set_fact:
+    left_advanced_launcher: "Left Side"
+    right_advanced_launcher: "Right Side"
+    bimanual_advanced_launcher: "Bimanual"
+  when: bimanual|bool
+
+- name: Create Shadow Advanced Launchers/Right Side folder
+  file:
+    path: "{{ desktop_path }}/{{ right_advanced_launcher }}"
+    mode: '755'
+    state: directory
+  when: bimanual|bool
+
+- name: Create Shadow Advanced Launchers/Left Side folder
+  file:
+    path: "{{ desktop_path }}/{{ left_advanced_launcher }}"
+    mode: '755'
+    state: directory
+  when: bimanual|bool
+
+- name: Create Shadow Advanced Launchers/Bimanual folder
+  file:
+    path: "{{ desktop_path }}/{{ bimanual_advanced_launcher }}"
+    mode: '755'
+    state: directory
+  when: bimanual|bool
+
+- name: Include Bimanual Role
+  include_role:
+    name: products/common/bimanual-icons

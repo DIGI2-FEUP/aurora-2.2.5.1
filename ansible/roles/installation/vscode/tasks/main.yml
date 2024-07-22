@@ -1,0 +1,36 @@
+# Copyright 2022 Shadow Robot Company Ltd.
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
+---
+# VSCode IDE installation
+
+- name: Update package lists
+  apt:
+    update_cache: yes
+  become: yes
+
+- name: Install needed libs
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - libxkbfile1
+      - libsecret-1-0
+      - libgbm1
+  become: yes
+
+- name: Install VSCode 1.35 .deb package from the internet.
+  apt:
+    deb: https://update.code.visualstudio.com/1.65.2/linux-deb-x64/stable
+  become: yes

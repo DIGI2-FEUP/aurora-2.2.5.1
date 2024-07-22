@@ -1,0 +1,37 @@
+# Copyright 2022 Shadow Robot Company Ltd.
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program. If not, see <http://www.gnu.org/licenses/>.
+
+---
+- name: Install shadow glove driver dependencies
+  apt:
+    name: "{{ packages }}"
+    install_recommends: no
+  vars:
+    packages:
+      - libusb-1.0-0
+      - fxload
+  become: yes
+
+- name: Check out the shadow glove driver github repo
+  git:
+    repo: "{{ shadow_glove_driver_repo }}"
+    dest: "{{ user_folder }}/{{ shadow_glove_driver_folder }}"
+    version: "{{ shadow_glove_driver_repo_branch }}"
+  become: yes
+
+- name: Install shadow glove driver
+  shell: "./{{ shadow_glove_installer_file }}"
+  args:
+    chdir: "{{ user_folder }}/{{ shadow_glove_driver_folder }}/{{ shadow_glove_installer_folder }}"
+  become: yes
