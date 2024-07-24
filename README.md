@@ -2,6 +2,8 @@
 
 This repository is a modified version of the original Shadow Hand [aurora](https://github.com/shadow-robot/aurora/tree/v2.2.5.1) respository created to install the software in Ubuntu 22.04.
 
+Last reviewed: `24/07/2024`
+
 ## Changes
 
 ### - run-ansible.sh
