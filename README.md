@@ -1,3 +1,25 @@
+# aurora v2.2.5.1 (Ubuntu 22.04 version)
+
+This repository is a modified version of the original Shadow Hand [aurora](https://github.com/shadow-robot/aurora/tree/v2.2.5.1) respository created to install the software in Ubuntu 22.04.
+
+## Changes
+
+### - run-ansible.sh
+
+ - File path: [`bin/run-ansible.sh`](bin/run-ansible.sh)
+ - Line: `262`
+ - OLD: `git clone --depth 1 -b ${aurora_tools_branch} https://github.com/DIGI2-FEUP/aurora-2.2.5.1.git $aurora_home`
+ - NEW: `git clone --depth 1 -b ${aurora_tools_branch} https://github.com/DIGI2-FEUP/aurora.git $aurora_home`
+
+### - main.yaml [DHCP]
+
+ - File path: [`ansible/roles/installation/dhcp/tasks/main.yml`](ansible/roles/installation/dhcp/tasks/main.yml)
+ - Line: `42`
+ - OLD: `dhcp_interface_name: "{{ hostvars[groups['dhcp'][0]]['ansible_interfaces'] | select('match','enx') | list | first }}"`
+ - NEW: `dhcp_interface_name: "{{ hostvars[groups['dhcp'][0]]['ansible_interfaces'] | select('match','eth') | list | first }}"`
+ - Reason: In the new version of Ubuntu the USB Ethernet adapter is detected as ethX instead of enxX.
+   
+
 # Table of Contents
 - [Introduction](#introduction)
 - [Multiple Aurora Installations on one device](#multiple-aurora-installations-on-one-device)
