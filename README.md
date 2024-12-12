@@ -2,7 +2,16 @@
 
 This repository is a modified version of the original Shadow Hand [aurora](https://github.com/shadow-robot/aurora/tree/v2.2.5.1) respository created to install the software in Ubuntu 22.04.
 
-Last reviewed: `24/07/2024`
+Last reviewed: `12/12/2024`
+
+## GitHub RESET to specific branch (USE WITH CAUTION)
+
+```bash
+git reset --hard <commit-id>
+```
+```bash
+git push origin master --force
+```
 
 ## Changes
 
